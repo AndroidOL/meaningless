@@ -19,12 +19,6 @@ const app = new Koa();
 const Router = require('koa-router');
 const router = new Router();
 
-const SSLKey = '..\\SSL\\localhost_key.pem';
-const SSLCrt = '..\\SSL\\localhost_crt.pem'
-const options = {
-    key: fs.readFileSync(SSLKey),
-    cert: fs.readFileSync(SSLCrt)
-}
 
 app.use(router.routes());
 app.on("error", (err, next) => {
@@ -46,7 +40,13 @@ router.get('/form', async (ctx, next) => {
     } else { ctx.status= 404; }
 });
 
-if (existsFileEX(SSLKey) && existsFileEX(SSLCrt)) {
+if (existsFileEX('..\\SSL\\')) {
+    const SSLKey = '..\\SSL\\localhost_key.pem';
+    const SSLCrt = '..\\SSL\\localhost_crt.pem'
+    const options = {
+        key: fs.readFileSync(SSLKey),
+        cert: fs.readFileSync(SSLCrt)
+    }
     https.createServer(options, app.callback()).listen(443, (err) => {
         if (err) {
             console.log('HTTPS 服务启动出错', err);
