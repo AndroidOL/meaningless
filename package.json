@@ -4,7 +4,10 @@
   "description": "Meaningless",
   "main": "index.js",
   "dependencies": {
-    "koa": "^2.11.0"
+    "https": "^1.0.0",
+    "koa": "^2.11.0",
+    "koa-sslify": "^4.0.3",
+    "nodemon": "^2.0.4"
   },
   "devDependencies": {},
   "scripts": {
