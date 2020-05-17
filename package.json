@@ -6,7 +6,10 @@
   "dependencies": {
     "https": "^1.0.0",
     "koa": "^2.11.0",
+    "koa-router": "^8.0.8",
     "koa-sslify": "^4.0.3",
+    "koa-static": "^5.0.0",
+    "mime": "^2.4.5",
     "nodemon": "^2.0.4"
   },
   "devDependencies": {},

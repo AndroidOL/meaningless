@@ -1,40 +1,65 @@
+// 依赖
+const fs = require('fs');
+const mime = require('mime');
 const http = require("http");
 const https = require('https');
-const fs = require('fs');
 const enforceHTTPS = require('koa-sslify');
 
 // 自定义函数
-function existsFile(filename) {
-    return new Promise(
-        (complete, fail) => 
-            fs.access(filename, fs.R_OK | fs.W_OK, (err) => 
-                err ? fail(err) : complete()))
+function existsFileEX(filename) {
+    ret = true;
+    // fs.open(filename, function(err) { ret = false; });
+    fs.existsSync(filename) ? ret = true : ret = false;
+    return ret;
 }
 
 // Koa 运行
 const Koa = require('koa');
 const app = new Koa();
+const Router = require('koa-router');
+const router = new Router();
 
+const SSLKey = '..\\SSL\\localhost_key.pem';
+const SSLCrt = '..\\SSL\\localhost_crt.pem'
 const options = {
-    key: fs.readFileSync('..\\SSL\\localhost_key.pem'),
-    cert: fs.readFileSync('..\\SSL\\localhost_crt.pem')
+    key: fs.readFileSync(SSLKey),
+    cert: fs.readFileSync(SSLCrt)
 }
 
-app.use(async ctx => {
-    ctx.body = 'Hello World\n';
+app.use(router.routes());
+app.on("error", (err, next) => {
+    console.log(err);
+})
+
+router.get('/', async (ctx, next) => {
+    ctx.status= 200;
+    ctx.set('Content-Type', mime.getType(StaticPage)+";charset=utf-8");
+    ctx.body = 'Hello World!\n';
 });
 
-// http.createServer(app.callback()).listen(80, (err) => {
-//     if (err) {
-//         console.log('HTTP 服务启动出错', err);
-//     } else {
-//         console.log('HTTP 服务建立成功 [' + 80 + ']');
-//     }
-// });
-https.createServer(options, app.callback()).listen(443, (err) => {
-    if (err) {
-        console.log('HTTPS 服务启动出错', err);
-    } else {
-        console.log('HTTPS 服务建立成功 [' + 443 + ']');
-    }
+router.get('/form', async (ctx, next) => {
+    StaticPage = '.\\static\\form.html';
+    if (existsFileEX(StaticPage)) {
+        ctx.status= 200;
+        ctx.set('Content-Type', mime.getType(StaticPage)+";charset=utf-8");
+        ctx.body = fs.createReadStream(StaticPage);
+    } else { ctx.status= 404; }
 });
+
+if (existsFileEX(SSLKey) && existsFileEX(SSLCrt)) {
+    https.createServer(options, app.callback()).listen(443, (err) => {
+        if (err) {
+            console.log('HTTPS 服务启动出错', err);
+        } else {
+            console.log('HTTPS 服务建立成功 [' + 443 + ']');
+        }
+    });
+} else {
+    http.createServer(app.callback()).listen(80, (err) => {
+        if (err) {
+            console.log('HTTP 服务启动出错', err);
+        } else {
+            console.log('HTTP 服务建立成功 [' + 80 + ']');
+        }
+    });
+}
