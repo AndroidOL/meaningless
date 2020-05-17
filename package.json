@@ -1,0 +1,26 @@
+{
+  "name": "meaningless",
+  "version": "1.0.0",
+  "description": "Meaningless",
+  "main": "index.js",
+  "dependencies": {
+    "koa": "^2.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndroidOL/meaningless.git"
+  },
+  "keywords": [
+    "koa"
+  ],
+  "author": "",
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/AndroidOL/meaningless/issues"
+  },
+  "homepage": "https://github.com/AndroidOL/meaningless#readme"
+}
